@@ -4,7 +4,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -g -lpthread -ggdb3 
 FLAGS = $(TOPFLAGS)
 
-INCLUDE = util ParallelHashmap						# Required for header files
+INCLUDE = util MemManager ParallelHashmap			# Required for header files
 LINKDIR = MemManager								# Required for .a files
 
 #LIB_TYPE = {static,shared}
