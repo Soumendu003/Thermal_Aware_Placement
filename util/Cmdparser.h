@@ -10,11 +10,12 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <vector>
+//#include <vector>
 #include <sstream>
 #include <functional>
 
 #include "ThermPlannerSystem.h"
+#include "Array.h"
 
 #ifdef THERMPLANNER_NAMESPACE
 namespace ThermPlanner{
@@ -43,7 +44,7 @@ public:
 } ; // NumericalBase
 
 struct CallbackArgs {
-    const std::vector<std::string>& arguments;
+    const Array<std::string>& arguments;
     std::ostream& output;
     std::ostream& error;
 };
@@ -72,7 +73,7 @@ private:
         std::string description;
         bool required;
         bool handled;
-        std::vector<std::string> arguments;
+        Array<std::string> arguments;
         bool const dominant;
         bool const variadic;
 
@@ -91,13 +92,13 @@ private:
     };
 
     template<typename T>
-    struct ArgumentCountChecker<cli::NumericalBase<T>>
+    struct ArgumentCountChecker<NumericalBase<T>>
     {
         static constexpr bool Variadic = false;
     };
 
     template<typename T>
-    struct ArgumentCountChecker<std::vector<T>>
+    struct ArgumentCountChecker<Array<T>>
     {
         static constexpr bool Variadic = true;
     };
@@ -150,70 +151,70 @@ private:
         T value;
     };
 
-    static int parse(const std::vector<std::string>& elements, const int&, int numberBase = 0) {
+    static int parse(const Array<std::string>& elements, const int&, int numberBase = 0) {
         if (elements.size() != 1)
             throw std::bad_cast();
 
         return std::stoi(elements[0], 0, numberBase);
     }
 
-    static bool parse(const std::vector<std::string>& elements, const bool& defval) {
+    static bool parse(const Array<std::string>& elements, const bool& defval) {
         if (elements.size() != 0)
             throw std::runtime_error("A boolean command line parameter cannot have any arguments.");
 
         return !defval;
     }
 
-    static double parse(const std::vector<std::string>& elements, const double&) {
+    static double parse(const Array<std::string>& elements, const double&) {
         if (elements.size() != 1)
             throw std::bad_cast();
 
         return std::stod(elements[0]);
     }
 
-    static float parse(const std::vector<std::string>& elements, const float&) {
+    static float parse(const Array<std::string>& elements, const float&) {
         if (elements.size() != 1)
             throw std::bad_cast();
 
         return std::stof(elements[0]);
     }
 
-    static long double parse(const std::vector<std::string>& elements, const long double&) {
+    static long double parse(const Array<std::string>& elements, const long double&) {
         if (elements.size() != 1)
             throw std::bad_cast();
 
         return std::stold(elements[0]);
     }
 
-    static unsigned int parse(const std::vector<std::string>& elements, const unsigned int&, int numberBase = 0) {
+    static unsigned int parse(const Array<std::string>& elements, const unsigned int&, int numberBase = 0) {
         if (elements.size() != 1)
             throw std::bad_cast();
 
         return static_cast<unsigned int>(std::stoul(elements[0], 0, numberBase));
     }
 
-    static unsigned long parse(const std::vector<std::string>& elements, const unsigned long&, int numberBase = 0) {
+    static unsigned long parse(const Array<std::string>& elements, const unsigned long&, int numberBase = 0) {
         if (elements.size() != 1)
             throw std::bad_cast();
 
         return std::stoul(elements[0], 0, numberBase);
     }
 
-    static unsigned long long parse(const std::vector<std::string>& elements, const unsigned long long&, int numberBase = 0) {
+    static unsigned long long parse(const Array<std::string>& elements, const unsigned long long&, int numberBase = 0) {
         if (elements.size() != 1)
             throw std::bad_cast();
 
         return std::stoull(elements[0], 0, numberBase);
     }
 
-    static long parse(const std::vector<std::string>& elements, const long&, int numberBase = 0) {
+    static long parse(const Array<std::string>& elements, const long&, int numberBase = 0) {
         if (elements.size() != 1)
             throw std::bad_cast();
 
         return std::stol(elements[0], 0, numberBase);
     }
 
-    static std::string parse(const std::vector<std::string>& elements, const std::string&) {
+    static std::string parse(const Array<std::string>& elements, const std::string&) {
         if (elements.size() != 1)
             throw std::bad_cast();
 
@@ -221,10 +222,10 @@ private:
     }
 
     template<class T>
-    static std::vector<T> parse(const std::vector<std::string>& elements, const std::vector<T>&) {
+    static Array<T> parse(const Array<std::string>& elements, const Array<T>&) {
         const T defval = T();
-        std::vector<T> values { };
-        std::vector<std::string> buffer(1);
+        Array<T> values { };
+        Array<std::string> buffer(1);
 
         for (const auto& element : elements) {
             buffer[0] = element;
@@ -234,7 +235,7 @@ private:
         return values;
     }
 
-    template <typename T> static T parse(const std::vector<std::string>& elements, const NumericalBase<T>& wrapper) {
+    template <typename T> static T parse(const Array<std::string>& elements, const NumericalBase<T>& wrapper) {
         return parse(elements, wrapper.value, 0);
     }
 
@@ -244,7 +245,7 @@ private:
     /// \param elements
     /// \param wrapper
     /// \return parsed number
-    template <typename T, int base> static T parse(const std::vector<std::string>& elements, const NumericalBase<T, base>& wrapper) {
+    template <typename T, int base> static T parse(const Array<std::string>& elements, const NumericalBase<T, base>& wrapper) {
         return parse(elements, wrapper.value, wrapper.base);
     }
 
@@ -259,7 +260,7 @@ private:
     }
 
     template<class T>
-    static std::string stringify(const std::vector<T>& values) {
+    static std::string stringify(const Array<T>& values) {
         std::stringstream ss { };
         ss << "[ ";
 
@@ -353,6 +354,7 @@ public:
 
     inline void run_and_exit_if_error() {
         if (run() == false) {
+            std::cerr << this->usage();
             exit(1);
         }
     }
@@ -540,8 +542,8 @@ protected:
 
 private:
     const std::string _appname;
-    std::vector<std::string> _arguments;
-    std::vector<CmdBase*> _commands;
+    Array<std::string> _arguments;
+    Array<CmdBase*> _commands;
 } ; // class Parser
 
 #ifdef THERMPLANNER_NAMESPACE

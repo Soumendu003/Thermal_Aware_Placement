@@ -41,7 +41,7 @@
     
 */
 
-#define THERMPLANNER_MEMORY_MANAGER // <--- Comment this line out to control flag from build environment, or uncomment to force on.
+//#define THERMPLANNER_MEMORY_MANAGER // <--- Comment this line out to control flag from build environment, or uncomment to force on.
 
 /*-------------------------------------------------------------------------------------------
     THERMPLANNER_PARALLEL_HASHMAP Compile Flag : (active in all projects)
@@ -54,7 +54,8 @@
     
 */
 
-#define THERMPLANNER_PARALLEL_HASHMAP // <--- Comment this line out to control flag from build environment, or uncomment to force on.
+//#define THERMPLANNER_PARALLEL_HASHMAP // <--- Comment this line out to control flag from build environment, or uncomment to force on.
+
 
 
 /* -------------------------------------------------------------- */
@@ -71,15 +72,17 @@
 
 #ifdef THERMPLANNER_MEMORY_MANAGER
 #ifndef MI_MALLOC_H_
+#define MI_MALLOC_H_
     #include <mimalloc.h>
-    #define MI_MALLOC_H_
 #endif
-    // Define macro for easy insertion of overrided new and delete routines.
-    #define INSERT_MM_HOOKS \
-        void operator delete(void* p) noexcept              { mi_free(p); } \
-        void operator delete[](void* p) noexcept            { mi_free(p); } \
-        void* operator new(std::size_t n) noexcept(false)   { return mi_new(n); } \
-        void* operator new[](std::size_t n) noexcept(false) { return mi_new(n); }
+    // Define macro for global new delete. Insert it only in main file.
+    #define GLOBAL_NEW_DELETE <mimalloc-new-delete.h>
+
+    #define MEM_STATS \
+        mi_version() ; \
+        mi_option_enable(mi_option_show_stats) ; \
+        mi_option_enable(mi_option_show_errors) ; \
+        mi_option_enable(mi_option_verbose) ;
 
 #endif // #ifdef THERMPLANNER_MEMORY_MANAGER
 

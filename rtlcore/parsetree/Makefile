@@ -1,13 +1,13 @@
 HOME = /home/guddu/Thermal_Aware_Placement
 SRC = $(shell pwd)
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -g -lpthread -ggdb3 
+CXXFLAGS = -std=c++11 -Wall -g -lpthread -ggdb3 -pg 
 FLAGS = $(TOPFLAGS)
 
 #//## For Essentials
 INCLUDE = util MemManager ParallelHashmap			# Required for header files
-LINKDIR = MemManager util							# Required for .a or .so files
-#//## For Essentials
+LINKDIR = MemManager								# Required for .a or .so files
+#//## For Essentials							# Required for .a or .so files
 
 #//## For Parser
 INCLUDE += rtlcore/parser
@@ -34,10 +34,9 @@ ifeq ($(shell uname | head -c 6),CYGWIN)
 endif
 
 
-TARGET := rtlcore-$(OS)
+TARGET := RtlCoreParseTree-$(OS).$(LIB_EXT)
 
-CLEANLIST =  $(OBJECTS) 
-
+CLEANLIST =  $(OBJECTS)
 
 default : target
 
@@ -47,15 +46,15 @@ default : target
 $(OBJECTS) : $(HEADERS) $(patsubst %,$(HOME)/%/*.h,$(INCLUDE)) 
 
 target: $(SOBJECTS) $(OBJECTS)
-	#creates executable
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJECTS) $(patsubst %,$(HOME)/%/*-$(OS).$(LIB_EXT),$(LINKDIR)) $(FLAGS)
+	#creates library
+	ld -r -o $(TARGET) *.o
 
 .PHONY: build
 build: target clean
 
 .PHONY: clean
-clean:
-	rm -rf $(CLEANLIST)
+clean: $(CLEANLIST)
+	rm -rf $(OBJECTS)
 
 .PHONY: clean-all
-	rm -rf $(CLEANLIST) $(TARGET)
+	rm -rf $(OBJECTS) $(TARGET)

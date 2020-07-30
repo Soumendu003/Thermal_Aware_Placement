@@ -1,50 +1,47 @@
-#include <iostream>
-#include <cstdlib>
-#include <cstring>
-
 #include "ThermPlannerSystem.h"
+#include "Cmdparser.h"
 
 #include "RtlCoreDriver.h"
 #include "Map.h"
+#include "Set.h"
+#include "Array.h"
+#include "String.h"
+#include <iostream>
 
 #ifdef THERMPLANNER_NAMESPACE
 using namespace ThermPlanner ;
 #endif
 
 
-int main(const int argc, const char **argv)
+int main(int argc, const char **argv)
 {
-    FlatMap<int, int> *map = new FlatMap<int, int> ;
-    delete map ;
-    /** check for the right # of arguments **/
-    if( argc == 2 )
-    {
-      RtlCoreDriver driver;
-      /** example for piping input from terminal, i.e., using cat **/ 
-      if( std::strncmp( argv[ 1 ], "-o", 2 ) == 0 )
-      {
-         driver.Parse( std::cin );
-      }
-      /** simple help menu **/
-      else if( std::strncmp( argv[ 1 ], "-h", 2 ) == 0 )
-      {
-         std::cout << "use -o for pipe to std::cin\n";
-         std::cout << "just give a filename to count from a file\n";
-         std::cout << "use -h to get this menu\n";
-         return( EXIT_SUCCESS );
-      }
-      /** example reading input from a file **/
-      else
-      {
-         /** assume file, prod code, use stat to check **/
-         driver.Parse( argv[1] );
-      }
-      driver.print( std::cout ) << "\n";
+    
+    char *val = String::save("Guddu", "Hazard", 0, "Kante") ;
+
+    const char *val1 = String::CreateConstantString("Guddu") ;
+    const char *val2 = String::CreateConstantString("Guddu") ;
+
+    if (val1 != val2) {
+        std::cout << "Wrong" << std::endl ;
+    } else {
+        std::cout << "Correct" << std::endl ;
     }
-    else
-    {
-      /** exit with failure condition **/
-      return ( EXIT_FAILURE );
-    }
+    
+    std::cout<< "Joined string = " << val << std::endl ;
+
+    return 0 ;
+        
+    /*Parser cmdline = Parser(argc, argv) ;*/
+
+    //cmdline.set_required<std::string>("f", "file", "File to be parsed") ;
+
+    //cmdline.run_and_exit_if_error() ;
+
+    //std::string file = cmdline.get<std::string>("f") ;
+
+    //RtlCoreDriver driver;
+
+    /*driver.Parse(file.c_str()) ;*/
+
     return( EXIT_SUCCESS );
 }

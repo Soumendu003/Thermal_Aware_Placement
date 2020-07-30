@@ -1,27 +1,30 @@
 #ifndef SET_H_
 #define SET_H_
 
-#include "ThermplannerSystem.h"
+#include "ThermPlannerSystem.h"
+#include "Hash.h"
+#include <set>
+#include <unordered_set>
+#include <memory>
 
-#ifdef THERMPLANNER_PARALLEL_HASHMAP
-    #include "phmap.h"
-    #include "btree.h"
-#else   // uses stl map
-    #include <set> 
-    #include <unordered_set>
-#endif 
 
 #ifdef THERMPLANNER_NAMESPACE
 namespace ThermPlanner{
 #endif
 
-#ifdef THERMPLANNER_PARALLEL_HASHMAP
+    template <class K, class H = DefaultHash<K>>
+    using Set = std::set <K, typename H::less, std::allocator<K>> ;
+
+    template <class K, class V, class H = DefaultHash<K>>
+    using MultiSet = std::multiset <K, typename H::less, std::allocator<K>> ;
+
+    template <class K, class H = DefaultHash<K>>
+    using UnorderedSet = std::unordered_set <K, typename H::hash, typename H::equal_to, std::allocator<K>> ;
+
+    template <class K, class V, class H = DefaultHash<K>>
+    using UnorderedMultiSet = std::unordered_multiset <K, typename H::hash, typename H::equal_to, std::allocator<K>> ;
 
 
-#else
-
-
-#endif // #ifdef THERMPLANNER_PARALLEL_HASHMAP
 
 
 #ifdef THERMPLANNER_NAMESPACE
@@ -29,4 +32,4 @@ namespace ThermPlanner{
 #endif
 
 
-#endif // #ifndef MAP_H_
+#endif // #ifndef SET_H_
