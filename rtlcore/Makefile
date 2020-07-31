@@ -10,8 +10,8 @@ LINKDIR = MemManager								# Required for .a or .so files
 #//## For Essentials							# Required for .a or .so files
 
 #//## For Parser
-INCLUDE += rtlcore/parser
-LINKDIR += rtlcore/parser
+INCLUDE += rtlcore_parser
+LINKDIR += rtlcore_parser
 #//## For Parser
 
 #LIB_TYPE = {static,shared}
