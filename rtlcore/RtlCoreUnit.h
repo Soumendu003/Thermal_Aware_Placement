@@ -10,14 +10,13 @@ namespace ThermPlanner{
 #endif
 
 class RtlCoreExpression ;
-class RtlCoreModuleItem ;
 class RtlCoreScope ;
 
 class RtlCoreUnit
 {
-public:
+protected: // Abstract class
     explicit RtlCoreUnit(const char *name): _name(name) {}
-    ~RtlCoreUnit() {}
+    virtual ~RtlCoreUnit() {}
 
 private:
     // Prevent compiler from defining the following
@@ -37,7 +36,8 @@ protected:
 class RtlCoreModule : public RtlCoreUnit
 {
 public:
-    explicit RtlCoreModule(const char *name, Array<RtlCoreExpression *> *port_connects, Array<RtlCoreModuleItem *> *module_items, RtlCoreScope *scope) ;
+    RtlCoreModule(const char *name, Array<RtlCoreExpression *> *port_connects, RtlCoreScope *scope):
+        RtlCoreUnit(name), _port_connects(port_connects), _scope(scope) {}
     ~RtlCoreModule() {}
 
 private:
@@ -49,9 +49,11 @@ public:
     // ThermPlanner's RTTI method.  (ANSI's C++ RTTI is too expensive)
     virtual RTLCORE_CLASS_ID       GetClassId() const { return ID_RTLCORE_MODULE ; } // Ids defined in RtlCoreClassIds.h
 
+    Array<RtlCoreExpression *>     GetPortConnects()  { return _port_connects ; }
+    RtlCoreScope *                 GetScope()         { return _this_scope ; }  
+
 private:
     Array<RtlCoreExpression *>      *_port_connects ; 
-    Array<RtlCoreModuleItem *>      *_module_items ;
     RtlCoreScope                    *_this_scope ;
 
 } ; // class RtlCoreModule

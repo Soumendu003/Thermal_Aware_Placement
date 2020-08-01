@@ -14,13 +14,12 @@ namespace ThermPlanner{
 class RtlCoreScope
 {
 public:
-    explicit RtlCoreScope(RtlCoreScope *upper = 0, RtlCoreIdDef *owner): _upper(upper), _owner(owner) 
+    explicit RtlCoreScope(RtlCoreScope *upper = 0, RtlCoreIdDef *owner = 0): _upper(upper), _owner(owner) 
     {
         _curr_scope = new UnorderedMap<const char *, RtlCoreIdDef *, StringHash<const char *>> ;
     }
     ~RtlCoreScope()                         
     {
-        for (auto it = _curr_scope->begin(); it != _curr_scope->end(); it++) delete it->second ; // since values created by VeriScope.
         delete _curr_scope ; 
     }
 
@@ -39,17 +38,15 @@ public:
     UnorderedMap<const char *, RtlCoreIdDef *, StringHash<const char *>>* GetCurrentScope() { return _curr_scope ; }
 
     // Add identifier to the scope. (return 1 if id by that name was not there, 0 if such a name is already declared here).
-    // Set var_id with newly created VeriIdDef if successfull. Otherwise assign it the previous id.
-    unsigned Declare(const char *name, VeriIdDef **var_id)
+    // Set existing_id if Declare() fails because of already declared name.
+    unsigned Declare(VeriIdDef *id, VeriIdDef **existing_id)
     {
-       VeriIdDef *id = Find(name) ;
-        if (!id){
-            VeriIdDef *tem = new VeriIdDef(name) ;
-            _curr_scope->insert({name, tem}) ;
-            *var_id = tem ;
+       VeriIdDef *pre_id = Find(id->GetName()) ;
+        if (!pre_id){
+            _curr_scope->insert({name, id}) ;
             return 1 ;
         }
-        *var_id = id ;
+        *existing_id = pre_id ;
         return 0 ;
     }
 

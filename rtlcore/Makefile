@@ -7,7 +7,7 @@ FLAGS = $(TOPFLAGS)
 #//## For Essentials
 INCLUDE = util MemManager ParallelHashmap			# Required for header files
 LINKDIR = MemManager								# Required for .a or .so files
-#//## For Essentials							# Required for .a or .so files
+#//## For Essentials								
 
 #//## For Parser
 INCLUDE += rtlcore_parser

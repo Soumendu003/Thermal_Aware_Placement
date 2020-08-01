@@ -15,7 +15,15 @@ enum RTLCORE_CLASS_ID
 {
     ID_RTLCORE_BEGIN_TABLE = 0xc0000000, // The first marker (unused) - specifies starting value
 
-    ID_RTLCORE_MODULE,          ID_RTLCORE_GATE
+    // RtlCoreUnit
+    ID_RTLCORE_MODULE,          ID_RTLCORE_GATE,
+    
+    // RtlCoreIdDef
+    ID_RTLCORE_VARIABLE,        ID_RTLCORE_INSTID
+
+    // RtlCoreExpression
+    ID_RTLCORE_IDREF,           ID_RTLCORE_CONCAT,          ID_RTLCORE_PORTCONNECT,         ID_RTLCORE_RANGE,
+    ID_RTLCORE_INDEXEDID,       ID_RTLCORE_DATATYPE
 
 } ;
 
